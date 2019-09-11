@@ -10,16 +10,15 @@ public class Ls {
     private boolean lFlag;
     private boolean hFlag;
     private boolean rFlag;
-    private String outputPath = "";
+    private String outputPath;
     static TreeMap<String, String> answer = new TreeMap<>();
-    public Ls(boolean lFlag, boolean hFlag, boolean rFlag,String outputPath){
+    public Ls(boolean lFlag, boolean hFlag, boolean rFlag, String outputPath){
         this.lFlag = lFlag;
         this.hFlag = hFlag;
         this.rFlag = rFlag;
         this.outputPath = outputPath;
     }
-    static Ls ls = new Ls(false, false, false,"");
-
+    public static Ls ls = new Ls(false, false, false,"");
     public static void switchHumanReadable(StringBuilder str, long lengthItemInBytes) {
         int base = 1024;
         String[] type = {" B"," KB"," MB"," GB"};
@@ -64,7 +63,6 @@ public class Ls {
             } else {
                 str.append(lengthItemInBytes);
             }
-
             answer.replace(testFile.getName(), str.toString());
         }
     }
@@ -72,13 +70,11 @@ public class Ls {
         try
         {
             FileWriter outputFile = new FileWriter(ls.outputPath);
-
             for (Map.Entry<String, String> map : answer.entrySet())
                 if (ls.lFlag)
                     outputFile.write(map.getValue() + "   " + map.getKey() + "\n");
                 else
                     outputFile.write(map.getKey() + "\n");
-
             outputFile.close();
         }
         catch (IOException e)
@@ -86,7 +82,6 @@ public class Ls {
             System.err.println(e.getMessage());
         }
     }
-
     public static void main(String[] args) {
         if (args.length == 0) {
             System.out.println("Ls [-l] [-h] [-r] [-o output.file] directory_or_file");
@@ -94,20 +89,17 @@ public class Ls {
         }
         Ls.item = new File(args[args.length - 1]);
         if (Ls.item.isDirectory()) {
-
             String[] names = Ls.item.list();
-            if (names.length == 0) {
+            if (Objects.requireNonNull(names).length == 0) {
                 Ls.answer.put("Пусто", "");
                 return;
             }
-
             for (String str : names) {
                 Ls.answer.put(str, "");
             }
         } else {
             Ls.answer.put(Ls.item.getName(), "");
         }
-
         final int last = args.length - 1;
         int i = 0;
         while(i < last) {
@@ -116,19 +108,16 @@ public class Ls {
                 Ls.getRWX(false);
                 i++;
                 continue;
-
             }
             if (args[i].contains("-h")) {
                 ls.hFlag = true;
                 Ls.getRWX(true);
                 i++;
                 continue;
-
             }
             if (args[i].contains("-r")) {
                 ls.rFlag = true;
                 Ls.reverseTreeMap(Ls.answer);
-
             }
             if (args[i].equals("-o")) {
                 ls.outputPath = args[i++].substring(0, args[i].length() - 1);
